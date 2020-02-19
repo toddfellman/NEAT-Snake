@@ -29,8 +29,12 @@ class Board {
    public byte[] getFood() {
       return food.get(0);
    }
+   public boolean[][] board() {
+      return board;
+   }
    
-   public void draw(Graphics g) {
+   public void draw() {
+      Graphics g = Main.window.getGraphics();
       board[food.get(0)[0]][food.get(0)[1]] = true;
       
       for (byte x = 0; x < WIDTH; x++) {
