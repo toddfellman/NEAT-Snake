@@ -1,4 +1,8 @@
 # NEAT-Snake
+
+To run, use the Main.java file.
+
+
 I started off training a NEAT algorithm to play competitive snake.
 
 After realizing how complicated that NEAT is, I changed it to a combination of reinforcement learning & a genetic algorithm. 
