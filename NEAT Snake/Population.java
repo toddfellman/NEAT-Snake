@@ -12,11 +12,11 @@ class Population {
       }
    }
    
-   public void getOneMatch() {
+   public void getOneMatch(boolean display) {
       SnakeAI[] competitors = new SnakeAI[] {pop[(int) (Math.random() * pop.length)], pop[(int) (Math.random() * pop.length)]};
       System.out.println(competitors[0].getGen() + " , " + competitors[1].getGen());
       Match m = new Match(competitors[0], competitors[1]);
-      SnakeAI winner = m.run();
+      SnakeAI winner = m.run(display);
       if (competitors[0].equals(winner)) {
          competitors[1] = competitors[0].mateWith(pop[(int) (Math.random() * pop.length)] , competitors[1].getID());
       } else {

@@ -2,11 +2,14 @@ import java.lang.Math;
 
 class SnakeAI{
    private int id;
-   private byte memorySize = 16;
+   private int memorySize = 128;
    private double[][][] weights = new double[][][] {new double[Board.WIDTH * Board.HEIGHT + 1 + memorySize][127], 
                                                     new double[128][127], 
                                                     new double[128][127], 
                                                     new double[128][127],  
+                                                    new double[128][127],   
+                                                    new double[128][127],   
+                                                    new double[128][127],   
                                                     new double[128][127], 
                                                     new double[128][4 + memorySize]};
    
@@ -56,7 +59,7 @@ class SnakeAI{
    
    
    public static double sigmoid(double x) {
-      return 1/ (1 + Math.exp(-x));
+      return 1/ (1 + Math.exp(-x)) * 2 - 1;
    }
    public static double sigmoidDerivative(double x) {
       return sigmoid(x) * (1 - sigmoid(x));
@@ -65,7 +68,7 @@ class SnakeAI{
    
    
    
-   
+   //This might not acually by qLearning
    public void qLearn(boolean punish) {
       double[][][] derivatives = new double[weights.length][][];
       for (int layer = 0; layer < weights.length; layer++) {
@@ -86,7 +89,7 @@ class SnakeAI{
             nodesPrime[i] *= -1;
          }
       }
-      for (byte i = 0; i < memorySize; i++) {
+      for (int i = 0; i < memorySize; i++) {
          nodesPrime[i + 4] = memoryPrime[i];
       }
       for (int layer = weights.length - 1; layer >= 0; layer--) {
@@ -105,7 +108,7 @@ class SnakeAI{
             }
          }
       }
-      for (byte i = 0; i < memorySize; i++) {
+      for (int i = 0; i < memorySize; i++) {
          memoryPrime[i] = nodesPrime[Board.WIDTH * Board.HEIGHT + i];
       }
       
@@ -122,7 +125,7 @@ class SnakeAI{
    
 
    
-   public char getDirection(boolean[][] board) {
+   public byte getDirection(boolean[][] board) {
       Main.pause(5);
       
       for (int layer = 0; layer < network.length; layer++) {
@@ -136,7 +139,7 @@ class SnakeAI{
             if (board[x][y]) {
                network[0][x + Board.WIDTH * y] = 1;
             } else {
-               network[0][x + Board.WIDTH * y] = 0;
+               network[0][x + Board.WIDTH * y] = -1;
             }
          }
       }
@@ -163,7 +166,7 @@ class SnakeAI{
          }
          //System.out.println(network[1][j]);
       }
-      return new char[]{'w', 'a', 's', 'd'}[direction];
+      return direction;
    }
    
    
@@ -183,7 +186,7 @@ class SnakeAI{
             }
          }
       }
-      baby.setGen(generation + 1);
+      baby.generation = this.generation + 1;
       if (that.getGen() > generation) {
          baby.setGen(that.generation + 1);
       }

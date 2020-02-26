@@ -3,9 +3,9 @@ import java.util.ArrayList;
 class Snake {
    private ArrayList<byte[]> body;
    private boolean alive;
-   private char direction = 'w';
+   private byte direction = 0;
    private int id;
-   
+   private byte energy = Byte.MAX_VALUE;
    
    public Snake (int iid) {
       body = new ArrayList<byte[]>();
@@ -26,8 +26,8 @@ class Snake {
    }
    
    
-   public void setDirection(char dd) {
-      if (dd == 'w' || dd == 'a' || dd == 's' || dd == 'd') {
+   public void setDirection(byte dd) {
+      if (0 <= dd && dd <= 4) {
          direction = dd;
       }
    }
@@ -43,16 +43,16 @@ class Snake {
       
       
       switch (direction) {
-         case 'w':
+         case 0:
             body.add(0, new byte[] {head[0], (byte) (head[1] - 1)});
             break;
-         case 's':
+         case 1:
             body.add(0, new byte[] {head[0], (byte) (head[1] + 1)});
             break;
-         case 'a':
+         case 2:
             body.add(0, new byte[] {(byte) (head[0] - 1), head[1]});
             break;
-         case 'd':
+         case 3:
             body.add(0, new byte[] {(byte) (head[0] + 1), head[1]});
             break;
       }
@@ -61,16 +61,28 @@ class Snake {
       head = body.get(0);
       if (head[0] == food[0] && head[1] == food[1]) {
          b.moveFood();
-         brain.qLearn(false);
+         for (byte t = 0; t < 10; t++) {
+            brain.qLearn(false);
+         }
+         energy = Byte.MAX_VALUE;
       } else {
          body.remove(body.size() - 1);
+         energy--;
+      }
+      
+      if (energy == Byte.MIN_VALUE) {
+         energy = Byte.MAX_VALUE;
+         brain.qLearn(true);
       }
       
       try {
          b.activate(body);
       } catch (IndexOutOfBoundsException e) {
          alive = false;
-         brain.qLearn(true);
+         //we want to punish it very hard.
+         for (byte i = 0; i < 4; i++) {
+            brain.qLearn(true);
+         }
       }
    }
    

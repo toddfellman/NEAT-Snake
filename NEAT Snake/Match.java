@@ -21,11 +21,13 @@ class Match {
       
    }
    
-   public SnakeAI run() {//assuming only 2 snakes
+   public SnakeAI run(boolean display) {//assuming only 2 snakes
       //Main.pause(100);
-      //Main.window.setVisible(true);
+      if (display) {
+         Main.window.setVisible(true);
+      }
       int timer = 0;
-      while (snakes[0].isAlive() && snakes[1].isAlive() && timer <= 500/*(Board.WIDTH * Board.HEIGHT - 2) * (Board.WIDTH * Board.HEIGHT - 1) / 2*/) {
+      while (snakes[0].isAlive() && snakes[1].isAlive() /*&& timer <= 500*/) {
          timer++;
          for (byte i = 0; i < 2; i++) {
             gameBoard.draw();
@@ -38,11 +40,13 @@ class Match {
             }
          }
       }
-      //Main.window.setVisible(false);
       
       boolean s0 = snakes[0].isAlive();
       boolean s1 = snakes[1].isAlive();
       
+      /*if (display) {
+         Main.window.setVisible(false);
+      }*/
       
       if (s0 && !s1) {
          return brains[0];

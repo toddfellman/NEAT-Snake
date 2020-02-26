@@ -6,6 +6,7 @@ import java.util.ArrayList;
 class Board {
    public static final byte WIDTH = 20;
    public static final byte HEIGHT = 20;
+   public static final int AREA = 400;
    public static final byte PIXEL_SIZE = 20;
    
    private boolean[][] board;

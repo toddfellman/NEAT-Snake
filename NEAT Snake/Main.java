@@ -16,12 +16,12 @@ class Main {
       
       window.setSize(Board.WIDTH * Board.PIXEL_SIZE, Board.HEIGHT * Board.PIXEL_SIZE + Board.PIXEL_SIZE);
 		window.setResizable(false);
-      window.setVisible(true);
+      window.setVisible(false);
       
       
       Population pop = new Population(512);
-      while (true) {
-         pop.getOneMatch();
+      for (int match = 0; true; match++){
+         pop.getOneMatch(match % 16 == 0);
       }
    }
    
