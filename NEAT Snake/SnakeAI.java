@@ -14,7 +14,7 @@ class SnakeAI{
    
    
    private int generation;
-   private byte direction;
+   private byte direction = 1;
    
    
    private float[] memoryPrime = new float[MEMORY_SIZE];
@@ -99,7 +99,7 @@ class SnakeAI{
             for (int end = 0; end < weights[layer][start].length; end++) {
                float sig = 0;
                for (int i = 0; i < network[layer].length; i++) {
-                  sig += (float) weights[layer][i][end] * network[layer][i];
+                  sig += weights[layer][i][end] * network[layer][i];
                }
                sig = sigmoidDerivative(sig);
                derivatives[layer][start][end] += sig * network[layer][start] * lastLayer[end];

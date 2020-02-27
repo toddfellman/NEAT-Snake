@@ -23,14 +23,14 @@ class Match {
    
    public SnakeAI run(boolean display) {//assuming only 2 snakes
       //Main.pause(100);
-      if (display) {
-         Main.window.setVisible(true);
-      }
+      
       int timer = 0;
       while (snakes[0].isAlive() && snakes[1].isAlive() /*&& timer <= 500*/) {
          timer++;
          for (byte i = 0; i < 2; i++) {
-            gameBoard.draw();
+            if(display) { 
+               gameBoard.draw();
+            }
             
             snakes[i].setDirection(brains[i].getDirection(gameBoard.board()));
             snakes[i].move(gameBoard, brains[i]);
@@ -44,9 +44,6 @@ class Match {
       boolean s0 = snakes[0].isAlive();
       boolean s1 = snakes[1].isAlive();
       
-      /*if (display) {
-         Main.window.setVisible(false);
-      }*/
       
       if (s0 && !s1) {
          return brains[0];
@@ -54,6 +51,7 @@ class Match {
       if (!s0 && s1) {
          return brains[1];
       }
+      
       if (snakes[0].length() > snakes[1].length()) {
          return brains[0];
       }

@@ -19,9 +19,9 @@ class Main {
       window.setVisible(true);
       
       
-      Population pop = new Population(512);
+      Population pop = new Population(/*51*/2);
       for (int match = 0; true; match++){
-         pop.getOneMatch(match % 16 == 0);
+         pop.getOneMatch(true);//match % 16 == 0);
          if (match % 16 == 0) {
             System.out.println(match);
          }

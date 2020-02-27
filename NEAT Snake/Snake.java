@@ -3,7 +3,7 @@ import java.util.ArrayList;
 class Snake {
    private ArrayList<byte[]> body;
    private boolean alive;
-   private byte direction = 0;
+   private byte direction = 1;
    private int id;
    private byte energy = Byte.MAX_VALUE;
    
