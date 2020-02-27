@@ -11,17 +11,20 @@ class Main {
    public static void main(String[] args) {
       window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setTitle("NEAT snake");
+		window.setTitle("Snkae Training");
       
       
       window.setSize(Board.WIDTH * Board.PIXEL_SIZE, Board.HEIGHT * Board.PIXEL_SIZE + Board.PIXEL_SIZE);
 		window.setResizable(false);
-      window.setVisible(false);
+      window.setVisible(true);
       
       
       Population pop = new Population(512);
       for (int match = 0; true; match++){
          pop.getOneMatch(match % 16 == 0);
+         if (match % 16 == 0) {
+            System.out.println(match);
+         }
       }
    }
    

@@ -61,9 +61,9 @@ class Snake {
       head = body.get(0);
       if (head[0] == food[0] && head[1] == food[1]) {
          b.moveFood();
-         for (byte t = 0; t < 10; t++) {
-            brain.qLearn(false);
-         }
+         /*for (byte t = 0; t < 10; t++) {
+            */brain.qLearn(false);/*
+         }*/
          energy = Byte.MAX_VALUE;
       } else {
          body.remove(body.size() - 1);
@@ -80,9 +80,9 @@ class Snake {
       } catch (IndexOutOfBoundsException e) {
          alive = false;
          //we want to punish it very hard.
-         for (byte i = 0; i < 4; i++) {
-            brain.qLearn(true);
-         }
+         /*for (byte i = 0; i < 4; i++) {
+            */brain.qLearn(true);/*
+         }*/
       }
    }
    
