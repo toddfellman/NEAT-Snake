@@ -44,6 +44,8 @@ class Match {
       boolean s0 = snakes[0].isAlive();
       boolean s1 = snakes[1].isAlive();
       
+      brains[0].qLearn(!s0);
+      brains[1].qLearn(!s1);
       
       if (s0 && !s1) {
          return brains[0];

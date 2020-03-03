@@ -18,7 +18,7 @@ class Population {
       do {
          competitors[1] = pop[(int) (Math.random() * pop.length)];
       } while (competitors[0].getID() != competitors[1].getID());
-      System.out.println(competitors[0].getGen() + " , " + competitors[1].getGen());
+      //System.out.println(competitors[0].getGen() + " , " + competitors[1].getGen());
       Match m = new Match(competitors[0], competitors[1]);
       SnakeAI winner = m.run(display);
       /*if (competitors[0].equals(winner)) {

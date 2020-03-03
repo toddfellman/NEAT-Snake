@@ -13,13 +13,13 @@ class SnakeAI{
                                                     new float[128][4 + MEMORY_SIZE]};
    
    
-   private int generation;
+   private byte prevDirec = 1;
    private byte direction = 1;
    
    
-   private float[] memoryPrime = new float[MEMORY_SIZE];
    private float[][] network;
-   private static final float LEARNING_RATE = 0.0625f;
+   private float[][] prevNetwork;
+   private static final float LEARNING_RATE = 1f;
    
    
    
@@ -33,12 +33,17 @@ class SnakeAI{
             }
          }
       }
-      generation = 0;
+      //generation = 0;
       
       network = new float[weights.length + 1][];
       network[weights.length] = new float[5 + MEMORY_SIZE];
+      
+      prevNetwork = new float[weights.length + 1][];
+      prevNetwork[weights.length] = new float[5 + MEMORY_SIZE];
+      
       for (int i = 0; i < weights.length; i++) {
          network[i] = new float[weights[i].length];
+         prevNetwork[i] = new float[weights[i].length];
       }
    }
    
@@ -48,17 +53,14 @@ class SnakeAI{
    public int getID() {
       return id;
    }
-   public int getGen() {
-      return generation;
-   }
-   public void setGen(int gen) {
-      generation = gen;
-   }
    
    
    
    public static float sigmoid(float x) {
       return 1/ (1 + (float) Math.exp(-x)) * 2 - 1;
+   }
+   public static float inverseSigmoid(float x) {
+      return -(float) Math.log(2 / (x + 1) - 1);
    }
    public static float sigmoidDerivative(float x) {
       return 2 * (float) Math.exp(-x) / (float) Math.pow(1 + (float) Math.exp(-x), 2);
@@ -67,8 +69,7 @@ class SnakeAI{
    
    
    
-   //This might not akTually buy qLearning
-   public void qLearn(boolean punish) {
+   public float[] update(float[] lastLayerPrime, float[][] net) {
       float[][][] derivatives = new float[weights.length][][];
       for (byte layer = 0; layer < weights.length; layer++) {
          derivatives[layer] = new float [weights[layer].length][];
@@ -77,47 +78,66 @@ class SnakeAI{
          }
       }
       
-      float[] nodesPrime = new float[4 + MEMORY_SIZE];
-      for (byte i = 0; i < 4; i++) {
-         if (i == direction) {
-            nodesPrime[i] = 1f;
-         } else {
-            nodesPrime[i] = -1f;
-         }
-         if (punish) {
-            nodesPrime[i] *= -1f;
-         }
-      }
-      for (int i = 0; i < MEMORY_SIZE; i++) {
-         nodesPrime[i + 4] = memoryPrime[i];
-      }
+      float[] nodesPrime = lastLayerPrime;
+      
       for (byte layer = (byte) (weights.length - 1); layer >= 0; layer--) {
-         final float[] lastLayer = nodesPrime;
-         nodesPrime = new float[network[layer].length];
-         
+         final float[] prevLayer = nodesPrime;
+         nodesPrime = new float[net[layer].length];
          for (int start = 0; start < weights[layer].length; start++) {
             for (int end = 0; end < weights[layer][start].length; end++) {
-               float sig = 0;
-               for (int i = 0; i < network[layer].length; i++) {
-                  sig += weights[layer][i][end] * network[layer][i];
-               }
-               sig = sigmoidDerivative(sig);
-               derivatives[layer][start][end] += sig * network[layer][start] * lastLayer[end];
-               nodesPrime[start] += sig * weights[layer][start][end] * lastLayer[end];
+               float sig = sigmoidDerivative(inverseSigmoid(net[layer + 1][end]));
+               derivatives[layer][start][end] += sig * net[layer][start] * prevLayer[end];
+               nodesPrime[start] += sig * weights[layer][start][end] * prevLayer[end];
             }
          }
       }
-      for (int i = 0; i < MEMORY_SIZE; i++) {
-         memoryPrime[i] = nodesPrime[Board.WIDTH * Board.HEIGHT + i];
-      }
-      
-      for (int layer = 0; layer < weights.length; layer++) {
+      for (byte layer = 0; layer < weights.length; layer++) {
          for (int start = 0; start < weights[layer].length; start++) {
             for (int end = 0; end < weights[layer][start].length; end++) {
                weights[layer][start][end] += LEARNING_RATE * derivatives[layer][start][end];
             }
          }
       }
+      float[] out = new float[MEMORY_SIZE];
+      for (int i = 0; i < MEMORY_SIZE; i++) {
+         out[i] = nodesPrime[Board.AREA + i];
+      }
+      return out;
+   }
+   
+   
+   //This might not actually be qLearning
+   public void qLearn(boolean punish) {
+      float[] lastLayerPrime = new float[4 + MEMORY_SIZE];
+      for (byte i = 0; i < 4; i++) {
+         if (i == direction) {
+            lastLayerPrime[i] = 1f;
+         } else {
+            lastLayerPrime[i] = -1f;
+         }
+         if (punish) {
+            lastLayerPrime[i] *= -1f;
+         }
+      }
+      for (int i = 0; i < MEMORY_SIZE; i++) {
+         lastLayerPrime[i + 4] = 0;
+      }
+      
+      final float[] memoryPrime = update(lastLayerPrime, network);
+      for (byte i = 0; i < 4; i++) {
+         if (i == prevDirec) {
+            lastLayerPrime[i] = 1f;
+         } else {
+            lastLayerPrime[i] = -1f;
+         }
+         if (punish) {
+            lastLayerPrime[i] *= -1f;
+         }
+      }
+      for (int i = 0; i < MEMORY_SIZE; i++) {
+         lastLayerPrime[i + 4] = memoryPrime[i];
+      }
+      update(lastLayerPrime, prevNetwork);
    }
    
    
@@ -125,10 +145,12 @@ class SnakeAI{
 
    
    public byte getDirection(boolean[][] board) {
-      //Main.pause(5);
+      Main.pause(5);
       
+      prevDirec = direction;
       for (int layer = 0; layer < network.length; layer++) {
          for (int item = 0; item < network[layer].length; item++) {
+            prevNetwork[layer][item] = network[layer][item];
             network[layer][item] = 0;
          }
       }
@@ -184,10 +206,6 @@ class SnakeAI{
                baby.weights[layer][in][out] += 0.125 * (Math.random() * 2 - 1);
             }
          }
-      }
-      baby.generation = this.generation + 1;
-      if (that.getGen() > generation) {
-         baby.setGen(that.generation + 1);
       }
       return baby;
    }
