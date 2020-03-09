@@ -19,7 +19,7 @@ class Main {
       window.setVisible(true);
       
       
-      Population pop = new Population(/*51*/2);
+      Population pop = new Population(2);
       for (int match = 0; true; match++){
          pop.getOneMatch(true);//match % 16 == 0);
          if (match % 16 == 0) {

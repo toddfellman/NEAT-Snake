@@ -6,7 +6,7 @@ import java.util.ArrayList;
 class Board {
    public static final byte WIDTH = 20;
    public static final byte HEIGHT = 20;
-   public static final int AREA = 400;
+   public static final int AREA = WIDTH * HEIGHT;
    public static final byte PIXEL_SIZE = 20;
    
    private boolean[][] board;
@@ -48,6 +48,10 @@ class Board {
             g.fillRect(x * PIXEL_SIZE, y * PIXEL_SIZE + PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
          }
       }
+   }
+   
+   public void activate(byte x, byte y) {
+      board[x][y] = true;
    }
    
    public void activate(ArrayList<byte[]> tiles) {

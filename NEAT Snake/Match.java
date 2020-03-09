@@ -12,6 +12,10 @@ class Match {
       
       brains[0] = ss1;
       brains[1] = ss2;
+      
+      brains[0].resetNetworks();
+      brains[1].resetNetworks();
+      
       snakes[0] = new Snake(ss1.getID());
       snakes[1] = new Snake(ss2.getID());
       
@@ -24,9 +28,7 @@ class Match {
    public SnakeAI run(boolean display) {//assuming only 2 snakes
       //Main.pause(100);
       
-      int timer = 0;
-      while (snakes[0].isAlive() && snakes[1].isAlive() /*&& timer <= 500*/) {
-         timer++;
+      while (snakes[0].isAlive() && snakes[1].isAlive()) {
          for (byte i = 0; i < 2; i++) {
             if(display) { 
                gameBoard.draw();
@@ -44,8 +46,8 @@ class Match {
       boolean s0 = snakes[0].isAlive();
       boolean s1 = snakes[1].isAlive();
       
-      brains[0].qLearn(!s0);
-      brains[1].qLearn(!s1);
+      //brains[0].qLearn(!s0);
+      //brains[1].qLearn(!s1);
       
       if (s0 && !s1) {
          return brains[0];

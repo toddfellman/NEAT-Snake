@@ -61,9 +61,7 @@ class Snake {
       head = body.get(0);
       if (head[0] == food[0] && head[1] == food[1]) {
          b.moveFood();
-         /*for (byte t = 0; t < 10; t++) {
-            */brain.qLearn(false);/*
-         }*/
+         brain.qLearn(false);
          energy = Byte.MAX_VALUE;
       } else {
          body.remove(body.size() - 1);
@@ -75,14 +73,15 @@ class Snake {
          brain.qLearn(true);
       }
       
-      try {
-         b.activate(body);
-      } catch (IndexOutOfBoundsException e) {
-         alive = false;
-         //we want to punish it very hard.
-         /*for (byte i = 0; i < 4; i++) {
-            */brain.qLearn(true);/*
-         }*/
+      for (byte[] t: body) {
+         if ((0 <= t[0] && t[0] < Board.WIDTH) && (0 <= t[1] && t[1] < Board.HEIGHT)) {
+            b.activate(t[0], t[1]);
+         } else {
+            alive = false;
+         }
+      }
+      if (!alive) {
+         brain.qLearn(true);
       }
    }
    
@@ -91,38 +90,18 @@ class Snake {
       if (id != that.id) {
          if (head[0] == that.body.get(0)[0] && head[1] == that.body.get(0)[1]) {
             alive = false;
-            brain.qLearn(true);
+            //brain.qLearn(true);
          }
       }
       for (byte i = 1; i < that.body.size(); i++) {
          final byte[] segment = that.body.get(i);
          if (head[0] == segment[0] && head[1] == segment[1]) {
             alive = false;
-            brain.qLearn(true);
+            //brain.qLearn(true);
             break;
          }
       }
    }
    
-   /*public void hits(Snake other, Board b) {
-      ArrayList<int[]> otherBody = other.getBody();
-      int[] head = body.get(0);
-      boolean areDifferent = false;
-      for (int i = 1; i < otherBody.size(); i++) {
-         if (otherBody.get(i).equals(head)) {
-            alive = false;
-            reset(b);
-            break;
-         } else {
-            areDifferent = true;
-         }
-      }
-      if (alive && areDifferent) {
-         alive = otherBody.get(0).equals(head);
-         other.setStatus(false);
-         reset(b);
-         other.reset(b);
-      }
-   }*/
    
 }
