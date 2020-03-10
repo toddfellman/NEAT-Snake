@@ -80,13 +80,13 @@ class SnakeAI{
    public static float sigmoid(float x) {
       return 1/ (1 + (float) Math.exp(-x)) * 2 - 1;
    }
-   public static float inverseSigmoid(float x) {
+   /*public static float inverseSigmoid(float x) {
       return -(float) Math.log(2 / (x + 1) - 1);
    }
    public static float sigmoidDerivative(float x) {
       return 2 * (float) Math.exp(-x) / (float) Math.pow(1 + (float) Math.exp(-x), 2);
-   }
-   public static float helper(float x) {
+   }*/
+   public static float derivativeInverseSig(float x) {
       return (1 - x * x) / 2;
    }
    
@@ -114,8 +114,7 @@ class SnakeAI{
          for (int start = 0; start < weights[layer - 1].length; start++) {
             for (int end = 0; end < weights[layer - 1][start].length; end++) {
             
-               final float sig = helper(net[layer][end]);//sigmoidDerivative(inverseSigmoid(net[layer][end]));
-               
+               final float sig = derivativeInverseSig(net[layer][end]);               
                
                derivatives[layer - 1][start][end] += sig * net[layer - 1][start] * prevLayer[end];
                nodesPrime[start] += sig * weights[layer - 1][start][end] * prevLayer[end];

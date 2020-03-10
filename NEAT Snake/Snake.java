@@ -90,14 +90,14 @@ class Snake {
       if (id != that.id) {
          if (head[0] == that.body.get(0)[0] && head[1] == that.body.get(0)[1]) {
             alive = false;
-            //brain.qLearn(true);
+            brain.qLearn(true);
          }
       }
       for (byte i = 1; i < that.body.size(); i++) {
          final byte[] segment = that.body.get(i);
          if (head[0] == segment[0] && head[1] == segment[1]) {
             alive = false;
-            //brain.qLearn(true);
+            brain.qLearn(true);
             break;
          }
       }
