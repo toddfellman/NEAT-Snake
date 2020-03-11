@@ -68,7 +68,7 @@ class Snake {
          energy--;
       }
       
-      if (energy == Byte.MIN_VALUE) {
+      if (energy == 0/*Byte.MIN_VALUE*/) {
          energy = Byte.MAX_VALUE;
          brain.qLearn(true);
       }
@@ -84,6 +84,8 @@ class Snake {
          brain.qLearn(true);
       }
    }
+   
+   
    
    public void hits(Snake that, SnakeAI brain) {
       final byte[] head = body.get(0);

@@ -4,12 +4,11 @@ import java.awt.Component;
 
 
 class Main {
-   public static JFrame window;
+   public static final JFrame window = new JFrame();
    
    public static final Thread t = new Thread();
    
    public static void main(String[] args) {
-      window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setTitle("Snkae Training");
       
@@ -19,7 +18,7 @@ class Main {
       window.setVisible(true);
       
       
-      Population pop = new Population(2);
+      final Population pop = new Population(10);
       for (int match = 0; true; match++){
          pop.getOneMatch(true);//match % 16 == 0);
          if (match % 16 == 0) {
@@ -28,7 +27,7 @@ class Main {
       }
    }
    
-   public static void pause(long time) {
+   public static final void pause(long time) {
       try {
          t.sleep(time);
       } catch (InterruptedException e) {

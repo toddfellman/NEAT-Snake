@@ -1,6 +1,5 @@
 import java.lang.Math;
 
-import java.lang.*;
 
 class SnakeAI{
    private int id;
@@ -21,7 +20,7 @@ class SnakeAI{
    
    private float[][] network;
    private float[][] prevNetwork;
-   private static final float LEARNING_RATE = 1f;
+   private static final float LEARNING_RATE = 0.25f;
    
    
    
@@ -80,12 +79,6 @@ class SnakeAI{
    public static float sigmoid(float x) {
       return 1/ (1 + (float) Math.exp(-x)) * 2 - 1;
    }
-   /*public static float inverseSigmoid(float x) {
-      return -(float) Math.log(2 / (x + 1) - 1);
-   }
-   public static float sigmoidDerivative(float x) {
-      return 2 * (float) Math.exp(-x) / (float) Math.pow(1 + (float) Math.exp(-x), 2);
-   }*/
    public static float derivativeInverseSig(float x) {
       return (1 - x * x) / 2;
    }
@@ -93,10 +86,8 @@ class SnakeAI{
    
    
    
-   
-   
    public float[] update(float[] lastLayerPrime, float[][] net) {
-      float[][][] derivatives = new float[weights.length][][];
+      final float[][][] derivatives = new float[weights.length][][];
       for (byte layer = 0; layer < weights.length; layer++) {
          derivatives[layer] = new float [weights[layer].length][];
          for (int start = 0; start < weights[layer].length; start++) {
@@ -129,7 +120,7 @@ class SnakeAI{
             }
          }
       }
-      float[] out = new float[MEMORY_SIZE];
+      final float[] out = new float[MEMORY_SIZE];
       for (int i = 0; i < MEMORY_SIZE; i++) {
          out[i] = nodesPrime[Board.AREA + i];
       }
@@ -139,7 +130,7 @@ class SnakeAI{
    
    //This might not actually be qLearning
    public void qLearn(boolean punish) {
-      float[] lastLayerPrime = new float[5 + MEMORY_SIZE];
+      final float[] lastLayerPrime = new float[4 + MEMORY_SIZE];
       for (byte i = 0; i < 4; i++) {
          if (i == direction) {
             lastLayerPrime[i] = 1f;
@@ -198,9 +189,13 @@ class SnakeAI{
             }
          }
       }
+      
+      
       for (byte i = 0; i < 3; i++) {
          network[0][Board.AREA + i] = network[network.length - 1][4 + i];
       }
+      
+      
       network[0][Board.AREA + 3] = 1f;
       
       for (byte layer = 0; layer < weights.length; layer++) {
@@ -215,20 +210,9 @@ class SnakeAI{
       
       
       direction = 0;
-      //System.out.println();
       for (byte j = 0; j < 4; j++) {
          if (network[network.length - 1][j] > network[network.length - 1][direction]) {
             direction = j;
-         }
-         //System.out.println(network[network.length - 1][j]);
-         if ((new Float(network[network.length - 1][j])).isNaN()) {
-            /*for (int x = 0; x < Board.WIDTH; x++) {
-               System.out.println();
-               for (int y = 0; y < Board.HEIGHT; y++) {
-                  System.out.print(network[0][x + Board.WIDTH * y] + " ");
-               }
-            }*/
-            Main.pause(500);
          }
       }
       return direction;

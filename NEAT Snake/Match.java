@@ -43,11 +43,11 @@ class Match {
          }
       }
       
-      boolean s0 = snakes[0].isAlive();
-      boolean s1 = snakes[1].isAlive();
+      final boolean s0 = snakes[0].isAlive();
+      final boolean s1 = snakes[1].isAlive();
       
-      //brains[0].qLearn(!s0);
-      //brains[1].qLearn(!s1);
+      brains[0].qLearn(!s0);
+      brains[1].qLearn(!s1);
       
       if (s0 && !s1) {
          return brains[0];
@@ -57,9 +57,11 @@ class Match {
       }
       
       if (snakes[0].length() > snakes[1].length()) {
+         brains[0].qLearn(false);
          return brains[0];
       }
       if (snakes[0].length() < snakes[1].length()) {
+         brains[1].qLearn(false);
          return brains[1];
       }
       return brains[(int) (Math.random() * 2)];

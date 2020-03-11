@@ -34,6 +34,8 @@ class Board {
       return board;
    }
    
+   
+   
    public void draw() {
       Graphics g = Main.window.getGraphics();
       board[food.get(0)[0]][food.get(0)[1]] = true;
