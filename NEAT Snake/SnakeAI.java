@@ -170,7 +170,7 @@ class SnakeAI{
 
    
    public byte getDirection(boolean[][] board) {
-      //Main.pause(20);
+      Main.pause(5);
       
       prevDirec = direction;
       for (int layer = 0; layer < network.length; layer++) {

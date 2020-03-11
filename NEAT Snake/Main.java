@@ -10,7 +10,7 @@ class Main {
    
    public static void main(String[] args) {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setTitle("Snkae Training");
+		window.setTitle("Snake Training");
       
       
       window.setSize(Board.WIDTH * Board.PIXEL_SIZE, Board.HEIGHT * Board.PIXEL_SIZE + Board.PIXEL_SIZE);
@@ -18,7 +18,7 @@ class Main {
       window.setVisible(true);
       
       
-      final Population pop = new Population(10);
+      final Population pop = new Population(3);
       for (int match = 0; true; match++){
          pop.getOneMatch(true);//match % 16 == 0);
          if (match % 16 == 0) {
