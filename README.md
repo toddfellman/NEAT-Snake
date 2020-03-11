@@ -15,5 +15,5 @@ Each snake has a neural network with 8 hidden layers, each with 127 nodes.
 For the inputs, the snakes can only see if a pixel on the screen is colored white or black.
 The network outputs the absolute direction the snake should turn.
 
-Each snake is also given 16 nodes for memory.  
+Each snake is also given 400 nodes for memory.  
 This way the snakes should learn to figure out where they are, where their opponent is, and where the food is.
