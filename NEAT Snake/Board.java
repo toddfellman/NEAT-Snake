@@ -9,9 +9,9 @@ class Board {
    public static final int AREA = WIDTH * HEIGHT;
    public static final byte PIXEL_SIZE = 20;
    
-   private boolean[][] board;
+   private final boolean[][] board;
    
-   private ArrayList<byte[]> food;
+   private final ArrayList<byte[]> food = new ArrayList<byte[]>();
    
    public Board() {
       board = new boolean[WIDTH][HEIGHT];
@@ -21,7 +21,6 @@ class Board {
          }
       }
       
-      food = new ArrayList<byte[]>();
       food.add(randomSquare());
       
       activate(food);
@@ -37,7 +36,7 @@ class Board {
    
    
    public void draw() {
-      Graphics g = Main.window.getGraphics();
+      final Graphics g = Main.window.getGraphics();
       board[food.get(0)[0]][food.get(0)[1]] = true;
       
       for (byte x = 0; x < WIDTH; x++) {

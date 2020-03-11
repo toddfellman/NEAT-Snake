@@ -39,26 +39,27 @@ class Snake {
    
    public void move(Board b, SnakeAI brain) {
       b.erase(body);
-      byte[] head = body.get(0);
       
+      
+      final byte[] head = body.get(0);
       
       switch (direction) {
          case 0:
-            body.add(0, new byte[] {head[0], (byte) (head[1] - 1)});
+            head[1]--;
             break;
          case 1:
-            body.add(0, new byte[] {head[0], (byte) (head[1] + 1)});
+            head[1]++;
             break;
          case 2:
-            body.add(0, new byte[] {(byte) (head[0] - 1), head[1]});
+            head[0]--;
             break;
          case 3:
-            body.add(0, new byte[] {(byte) (head[0] + 1), head[1]});
+            head[0]++;
             break;
       }
+      body.add(0, head);
       
       final byte[] food = b.getFood();
-      head = body.get(0);
       if (head[0] == food[0] && head[1] == food[1]) {
          b.moveFood();
          brain.qLearn(false);
@@ -68,7 +69,7 @@ class Snake {
          energy--;
       }
       
-      if (energy == 0/*Byte.MIN_VALUE*/) {
+      if (energy == 0) {
          energy = Byte.MAX_VALUE;
          brain.qLearn(true);
       }
