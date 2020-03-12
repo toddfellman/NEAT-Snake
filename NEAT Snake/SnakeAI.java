@@ -1,5 +1,5 @@
 import java.lang.Math;
-
+import java.util.ArrayList;
 
 class SnakeAI{
    private int id;
@@ -14,15 +14,17 @@ class SnakeAI{
                                                     new float[128][4 + MEMORY_SIZE]};
    
    
-   private byte prevDirec = 1;
-   private byte direction = 1;
+
+   private byte direction = 0;
    
    
    private float[][] network;
-   private float[][] prevNetwork;
    private static final float LEARNING_RATE = 0.25f;
    
    
+   
+   private ArrayList<Byte> direcHistory = new ArrayList<Byte>();
+   private ArrayList<float[][]> netHistory = new ArrayList<float[][]>();
    
    
    public SnakeAI(int iid) {
@@ -39,17 +41,12 @@ class SnakeAI{
       network = new float[weights.length + 1][];
       network[weights.length] = new float[5 + MEMORY_SIZE];
       
-      prevNetwork = new float[weights.length + 1][];
-      prevNetwork[weights.length] = new float[5 + MEMORY_SIZE];
-      
       for (int i = 0; i < weights.length; i++) {
          network[i] = new float[weights[i].length];
-         prevNetwork[i] = new float[weights[i].length];
       }
       
       for (int i = 0; i < weights[0].length; i++) {
          network[0][i] = 0;
-         prevNetwork[0][i] = 0;
       }
    }
    
@@ -60,9 +57,11 @@ class SnakeAI{
       for (int a = 0; a < network.length; a++) {
          for (int b = 0; b < network[a].length; b++) {
             network[a][b] = 0;
-            prevNetwork[a][b] = 0;
          }
       }
+      
+      direcHistory = new ArrayList<Byte>();
+      netHistory = new ArrayList<float[][]>();
    }
    
    
@@ -145,23 +144,25 @@ class SnakeAI{
          lastLayerPrime[i + 4] = 0;
       }
       
-      final float[] memoryPrime = update(lastLayerPrime, network);
       
-      for (byte i = 0; i < 4; i++) {
-         if (i == prevDirec) {
-            lastLayerPrime[i] = 1f;
-         } else {
-            lastLayerPrime[i] = -1f;
+      float[] memoryPrime = update(lastLayerPrime, network);
+      for (int h = 0; h < direcHistory.size(); h++) {
+         
+         for (byte i = 0; i < 4; i++) {
+            if (i == direcHistory.get(h)) {
+               lastLayerPrime[i] = 1f;
+            } else {
+               lastLayerPrime[i] = -1f;
+            }
+            if (punish) {
+               lastLayerPrime[i] *= -1f;
+            }
          }
-         if (punish) {
-            lastLayerPrime[i] *= -1f;
+         for (int i = 0; i < MEMORY_SIZE; i++) {
+            lastLayerPrime[i + 4] = memoryPrime[i];
          }
+         memoryPrime = update(lastLayerPrime, netHistory.get(h));
       }
-      for (int i = 0; i < MEMORY_SIZE; i++) {
-         lastLayerPrime[i + 4] = memoryPrime[i];
-      }
-      update(lastLayerPrime, prevNetwork);
-      
       
    }
    
@@ -172,10 +173,22 @@ class SnakeAI{
    public byte getDirection(boolean[][] board) {
       Main.pause(5);
       
-      prevDirec = direction;
+      if (network[0][0] != 0) {
+      
+      direcHistory.add(0, direction);
+      
+      final float[][] copy = new float[network.length][];
+      for (int i = 0; i < network.length; i++) {
+         copy[i] = new float[network[i].length];
+         for (int j = 0; j < network[i].length; j++) {
+            copy[i][j] = network[i][j];
+         }
+      }
+      netHistory.add(0, copy);
+      }
+      
       for (int layer = 0; layer < network.length; layer++) {
          for (int item = 0; item < network[layer].length; item++) {
-            prevNetwork[layer][item] = network[layer][item];
             network[layer][item] = 0;
          }
       }
@@ -191,12 +204,12 @@ class SnakeAI{
       }
       
       
-      for (byte i = 0; i < 3; i++) {
+      for (int i = 0; i < MEMORY_SIZE; i++) {
          network[0][Board.AREA + i] = network[network.length - 1][4 + i];
       }
       
       
-      network[0][Board.AREA + 3] = 1f;
+      network[0][Board.AREA + MEMORY_SIZE] = 1f;
       
       for (byte layer = 0; layer < weights.length; layer++) {
          for (int j = 0; j < weights[layer][0].length; j++) {
